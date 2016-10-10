@@ -25,6 +25,8 @@ class RecaptchaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadTranslationsFrom(__DIR__.'/lang', 'recaptcha');
+
         $this->addValidator();
 
         $this->loadViewsFrom(__DIR__ . '/views', 'recaptcha');
@@ -40,7 +42,7 @@ class RecaptchaServiceProvider extends ServiceProvider
             $challenge = app('request')->input($captcha->getResponseKey());
 
             return $captcha->check($challenge, $value);
-        }, 'Please ensure that you are a human!');
+        }, trans('recaptcha::messages.failed'));
     }
 
     /**
