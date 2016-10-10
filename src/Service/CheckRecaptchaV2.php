@@ -46,6 +46,15 @@ class CheckRecaptchaV2 implements RecaptchaInterface
 
         $decodedResponse = json_decode($checkResponse, true);
 
+        if ($decodedResponse['success'] && app('config')->get('recaptcha.options.validate_domain_name', false)) {
+            if ($decodedResponse['hostname'] !== app('request')->server('SERVER_NAME')) {
+
+                \Log::error('Domain Name Validation failed', ['decodedResponse' => $decodedResponse, 'SERVER_NAME' => app('request')->server('SERVER_NAME')]);
+                
+                return false;
+            }
+        }
+
         return $decodedResponse['success'];
     }
 
